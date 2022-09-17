@@ -70,7 +70,7 @@ def post_detail(request, post_id):
 def post_create(request):
     template = 'posts/create_post.html'
     form = PostForm(
-        request.POST or None, 
+        request.POST or None,
         files=request.FILES or None
     )
     if form.is_valid():

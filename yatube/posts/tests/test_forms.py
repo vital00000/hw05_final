@@ -11,7 +11,6 @@ from django.urls import reverse
 from ..models import Group, Post
 
 User=get_user_model()
-
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
 
@@ -64,7 +63,7 @@ class PostFormTests(TestCase):
     def tearDown(self):
         super().tearDown()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
-        
+    
     def test_post_create(self):
         """Проверка на создание записи и валидность формы."""
         reverse_url = reverse('posts:post_create')
@@ -88,7 +87,6 @@ class PostFormTests(TestCase):
         self.assertEqual(
             list(post_ddt.image.chunks()), list(form_data['image'].chunks())
         )
-
 
     def test_post_edit(self):
         """Редактирование поста доступно авторизованному пользователю"""
@@ -115,7 +113,6 @@ class PostFormTests(TestCase):
         self.assertEqual(
             list(post_now.image.chunks()), list(form_data['image'].chunks())
         )
-
 
     def test_guest_cant_edit_post(self):
         """Редактирование поста не авторизированным пользователем."""
