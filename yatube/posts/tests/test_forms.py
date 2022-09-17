@@ -10,7 +10,7 @@ from django.urls import reverse
 
 from ..models import Group, Post
 
-User=get_user_model()
+User = get_user_model()
 
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
@@ -64,7 +64,7 @@ class PostFormTests(TestCase):
     def tearDown(self):
         super().tearDown()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
-    
+
     def test_post_create(self):
         """Проверка на создание записи и валидность формы."""
         reverse_url = reverse('posts:post_create')
