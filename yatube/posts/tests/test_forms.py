@@ -11,6 +11,8 @@ from django.urls import reverse
 from ..models import Group, Post
 
 User=get_user_model()
+
+
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
 
@@ -38,7 +40,6 @@ class PostFormTests(TestCase):
             group=cls.group,
             image=None,
         )
-
 
     @classmethod
     def tearDownClass(cls):
