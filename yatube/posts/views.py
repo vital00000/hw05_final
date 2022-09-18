@@ -49,11 +49,11 @@ def group_list(request, slug):
 
 
 def profile(request, username):
-    user = get_object_or_404(User, username=username)
-    post_list = Post.objects.select_related('author')
+    posts_author = get_object_or_404(User, username=username)
+    post_list = posts_author.posts.all()
     page_obj = paginator_posts(request, post_list)
     context = {
-        'author': user,
+        'author': posts_author,
         'page_obj': page_obj,
     }
     return render(request, 'posts/profile.html', context)
