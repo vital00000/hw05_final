@@ -2,13 +2,10 @@ from django import forms
 
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from posts.models import Follow, Group, Post
-
-User = get_user_model()
+from posts.models import Follow, Group, Post, User
 
 
 class PostViewsTest(TestCase):
@@ -75,11 +72,13 @@ class PostViewsTest(TestCase):
                 self.assertTemplateUsed(response, template)
 
     def test_index_page_list(self):
+        """ Проверка контекста group_list"""
         response = self.authorized_client.get(reverse('posts:index'))
         index = list(response.context['page_obj'])
         self.assertEqual(index[0].image, self.post.image)
 
     def test_group_list_page_list(self):
+        """Проверка контекста  profile """
         response = self.authorized_client.get(reverse(
             'posts:group_list', kwargs={
                 'slug': self.group.slug
@@ -88,6 +87,7 @@ class PostViewsTest(TestCase):
         self.assertEqual(group_list[0].image, self.post.image)
 
     def test_post_detail_page_show_correct_context(self):
+        """Проверка контекста post_detail """
         response = self.authorized_client.get(reverse(
             'posts:post_detail',
             kwargs={'post_id': self.post.id
@@ -98,6 +98,7 @@ class PostViewsTest(TestCase):
         self.assertEqual(post.image, self.post.image)
 
     def test_edit_uses_correct_form(self):
+        """ Форма post_edit с ключом form, is_Edit"""
         response = self.author_post.get(reverse(
             'posts:post_edit', kwargs={
                 'post_id': self.post.id}
@@ -111,6 +112,7 @@ class PostViewsTest(TestCase):
                 self.assertIsInstance(form_fields, type)
 
     def test_edit_post_uses_is_edit(self):
+        """Шаблон post_edit использует  key is_edit корректно"""
         response = self.author_post.get(
             reverse('posts:post_edit', kwargs={'post_id': self.post.id})
         )
@@ -119,6 +121,7 @@ class PostViewsTest(TestCase):
         self.assertIs(is_edit, True)
 
     def test_post_create(self):
+        """ шаблон post_create работает корректно"""
         response = self.authorized_client.get(reverse('posts:post_create'))
         form_fields = {
             'group': forms.fields.ChoiceField,
@@ -130,6 +133,8 @@ class PostViewsTest(TestCase):
                 self.assertIsInstance(form_field, field_type)
 
     def test_post_not_in_right_places(self):
+        """ пост корректно отображается
+         на страницах index, group_list и profile."""
         response_index = self.authorized_client.get(reverse('posts:index'))
         response_group_list = self.authorized_client.get(
             reverse('posts:group_list',
@@ -146,6 +151,8 @@ class PostViewsTest(TestCase):
         self.assertNotEqual(PostViewsTest, context_profile)
 
     def test_post_in_places_goup_list(self):
+        """  Проверка на правильное создание поста
+        в группе """
         new_post_1 = Post.objects.create(
             group=self.group,
             text='Что-то новое',
@@ -157,6 +164,7 @@ class PostViewsTest(TestCase):
         self.assertEqual(context_group, new_post_1.group)
 
     def test_post_in_places(self):
+        """Тестовый пост"""
         new_post = Post.objects.create(
             text='Новый Пост',
             author=self.user,
@@ -170,9 +178,9 @@ class PostViewsTest(TestCase):
 
 
 class PaginatorViewsTest(TestCase):
-    # Здесь создаются фикстуры: клиент и 13 тестовых записей.
     @classmethod
     def setUpClass(cls):
+        """13  тестовых записей и клиент"""
         super().setUpClass()
         cls.new_user = User.objects.create_user(username='vi')
         cls.post_user = Client()

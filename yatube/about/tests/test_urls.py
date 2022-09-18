@@ -18,5 +18,4 @@ class StaticURLTests(TestCase):
         for template, reverse_name in templates_url_names.items():
             with self.subTest(template=template):
                 response = self.guest_client.get(reverse_name)
-                self.assertTemplateUsed(response, template)
                 self.assertEqual(response.status_code, HTTPStatus.OK)

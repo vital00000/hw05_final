@@ -6,8 +6,10 @@ from .forms import CommentForm, PostForm
 from .models import Follow, Group, Post, User
 from .paginator import paginator_posts
 
+NAME_CONSTANTA = 20
 
-@cache_page(20, key_prefix='index_page')
+
+@cache_page(NAME_CONSTANTA, key_prefix='index_page')
 def index(request):
     posts = Post.objects.select_related('group', 'author')
     page_obj = paginator_posts(request, posts)
@@ -22,7 +24,7 @@ def group_posts(request, slug):
     title = 'Группы'
     text = 'Посты группы'
     group = get_object_or_404(Group, slug=slug)
-    posts = group.group.select_related()
+    posts = group.posts.all()
     page_obj = paginator_posts(request, posts)
     context = {
         'title': title,
@@ -33,17 +35,22 @@ def group_posts(request, slug):
     return render(request, template, context)
 
 
-def group_list(request):
+def group_list(request, slug):
     text = 'Информация о группах проекта Yatube'
+    group = get_object_or_404(Group, slug=slug)
+    posts = group.posts.all()
+    page_obj = paginator_posts(request, posts)
     context = {
+        'group': group,
         'text': text,
+        'page_obj': page_obj,
     }
     return render(request, 'posts/group_list.html', context)
 
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    post_list = Post.objects.filter(author=user)
+    post_list = Post.objects.select_related('author')
     page_obj = paginator_posts(request, post_list)
     context = {
         'author': user,
@@ -54,14 +61,12 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    count_post = post.author.posts.count()
     form = CommentForm()
     comments = post.comments.all()
     context = {
         'form': form,
         'comments': comments,
         'post': post,
-        'count_post': count_post,
     }
     return render(request, 'posts/post_detail.html', context)
 

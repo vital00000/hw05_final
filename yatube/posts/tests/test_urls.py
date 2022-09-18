@@ -34,7 +34,6 @@ class GroupViewsTests(TestCase):
 
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
-        # Шаблоны по адресам
         templates_pages_names = {
             'posts/index.html': reverse('posts:index'),
             'posts/profile.html': (

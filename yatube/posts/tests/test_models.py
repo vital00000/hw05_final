@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from ..constanta import LIMIT_SYMBOL
 from ..models import Group, Post
 
 User = get_user_model()
@@ -23,7 +24,7 @@ class PostModelTest(TestCase):
 
     def test_models_have_correct_object_names(self):
         """Проверяем, что у моделей корректно работает __str__."""
-        self.assertEqual(str(self.post), self.post.text[:15])
+        self.assertEqual(str(self.post), self.post.text[:LIMIT_SYMBOL])
         self.assertEqual(str(self.group), self.group.title)
 
     def test_post_model_verbose_name(self):

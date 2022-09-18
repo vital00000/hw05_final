@@ -3,15 +3,12 @@ import tempfile
 from http import HTTPStatus
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
-from ..models import Group, Post
-
-User = get_user_model()
-
+from ..models import Group, Post, User
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -44,6 +41,11 @@ class PostFormTests(TestCase):
     @classmethod
     def tearDownClass(cls):
         super().tearDownClass()
+        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
 
     def setUp(self):
         self.guest_client = Client()
@@ -60,6 +62,7 @@ class PostFormTests(TestCase):
             content=self.small_gif,
             content_type='image/gif'
         )
+        cache.clear()
 
     def tearDown(self):
         super().tearDown()
@@ -135,8 +138,3 @@ class PostFormTests(TestCase):
         self.assertFalse(
             Post.objects.filter(text='Измененённое сообщение').exists()
         )
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
-        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)

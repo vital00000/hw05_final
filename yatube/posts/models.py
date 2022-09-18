@@ -45,7 +45,7 @@ class Post(models.Model):
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
-        related_name='group',
+        related_name='posts',
         verbose_name='Группа поста',
         help_text='Выберите группу',
     )
@@ -72,6 +72,12 @@ class Comment(models.Model):
         verbose_name='Дата публикации'
     )
 
+    def __str__(self):
+        return self.text[:15]
+
+    class Meta:
+        ordering = ['-created']
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
@@ -86,3 +92,6 @@ class Follow(models.Model):
         related_name='following',
         verbose_name='Создатель постов'
     )
+
+    def __str__(self):
+        return f'{self.user} подписался на {self.author}'
