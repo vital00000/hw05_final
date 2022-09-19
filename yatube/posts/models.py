@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from .constanta import LIMIT_SYMBOL
+
 User = get_user_model()
 
 
@@ -51,10 +53,10 @@ class Post(models.Model):
     )
 
     def __str__(self):
-        return self.text[:15]
+        return self.text[:LIMIT_SYMBOL]
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ('-pub_date',)
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
 
@@ -73,10 +75,10 @@ class Comment(models.Model):
     )
 
     def __str__(self):
-        return self.text[:15]
+        return self.text[:LIMIT_SYMBOL]
 
     class Meta:
-        ordering = ['-created']
+        ordering = ('-created',)
 
 
 class Follow(models.Model):
