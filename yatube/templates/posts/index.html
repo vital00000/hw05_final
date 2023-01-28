@@ -10,9 +10,11 @@
   {% for post in page_obj %}
     <article>
       <ul>
+      <a href="{% url 'profile:author' post.author.get_full_name %}">
         <li>
           Автор: {{ post.author.get_full_name }}
         </li>
+      </a>
         <li>
           Дата публикаций: {{ post.pub_date|date:"d Y E"}}
         </li>
